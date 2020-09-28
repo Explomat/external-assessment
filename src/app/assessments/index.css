@@ -1,0 +1,243 @@
+.assessment{
+	padding: 24px;
+}
+
+.assessment-update__fullname, .assessment-update__project, .assessment-update__category, .assessment-update__state, .assessment-update__comment {
+	display: block !important;
+	width: 400px;
+	margin-top: 20px !important;
+}
+
+.assessment-update__date, .assessment-update__file {
+	display: inline-block !important;
+	margin-top: 20px !important;
+}
+
+.assessments__filters_add {
+	margin-left: 20px;
+}
+
+.assessments-list__state {
+	margin-right: 20px;
+	font-size: 13px;
+	color: #444444a1;
+	padding: 2px 4px;
+	border-radius: 4px;
+}
+
+.assessments-list__state--active {
+	background-color: #52c41ab5;
+}
+
+.assessments-list__state--complete {
+	border: 1px solid #444;
+}
+
+.assessment__body_edit {
+	border-radius: 4px;
+	padding: 4px;
+	-webkit-box-shadow: 10px 6px 17px -5px rgba(0,0,0,0.68);
+	-moz-box-shadow: 10px 6px 17px -5px rgba(0,0,0,0.68);
+	box-shadow: 10px 6px 17px -5px rgba(0,0,0,0.68);
+	clear: both;
+	padding: 12px;
+}
+
+.assessments {
+	margin-top: 30px;
+}
+
+.assessment__header {
+	font-size: 12px;
+	color: #444444b3;
+}
+
+.assessment__image {
+	width: 100%;
+	/*max-height: 500px;*/
+	margin-bottom: 20px;
+}
+
+.assessments-container {
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	color: rgba(0,0,0,.65);
+	font-size: 14px;
+	font-variant: tabular-nums;
+	line-height: 1.5;
+	list-style: none;
+	-webkit-font-feature-settings: "tnum";
+	font-feature-settings: "tnum","tnum";
+	position: relative;
+	background: #fff;
+	border-radius: 2px;
+	-webkit-transition: all .3s;
+	transition: all .3s;
+}
+
+.assessments-container__title {
+	color: #0066a0;
+	font-size: 48px;
+	font-family: GothamPro-Black;
+	font-weight: 700;
+}
+
+.assessments__assessment-list_image {
+	width: 100%;
+	height: 220px;
+	border-radius: 4px;
+	background-size: cover;
+	background-position: center;
+}
+
+.assessment__header_author-fullname {
+	margin-right: 6px;
+}
+
+.assessment__header_container {
+	margin-right: 12px;
+}
+
+.assessment__header_buttons {
+	float: right;
+}
+
+.assessment__header_save-button {
+	
+}
+
+.assessment__header_cancel-button {
+	margin-right: 12px;
+}
+
+.assessment__body_edit_title {
+	margin-bottom: 12px !important;
+}
+
+.assessment__body_edit_description {
+	margin-bottom: 12px !important;
+}
+
+.assessment__body {
+	margin: 0px 0 30px 0;
+}
+
+.assessment__body_description {
+	padding: 4px;
+    border-radius: 4px;
+    font-size: 16px;
+    line-height: 28px;
+}
+
+.assessments__new {
+	margin-top: 20px;
+}
+
+.assessments__new_title {
+	margin-bottom: 4px !important;
+}
+
+.assessments__new_description {
+	margin-bottom: 4px !important;
+}
+
+.assessments__filters {
+	margin-bottom: 20px;
+}
+
+.assessments__assessment-list {
+	position: relative;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	width: 400px;
+	height: 360px;
+	margin: 0 10px 20px 0;
+	display: inline-block;
+	vertical-align: top;
+	min-width: 210px;
+}
+
+.assessments__assessment-list_body_icon {
+	margin-right: 4px;
+}
+
+.assessments__assessment-list_footer-descr {
+	font-size: 12px;
+	color: #444444b3;
+	float: right;
+}
+
+.assessments__assessment-list_body_pubish-date {
+	display: inline-block;
+	background-color: #87ceeb78;
+	border-radius: 4px;
+	padding: 0 4px;
+	font-size: 10px;
+	line-height: 14px;
+}
+
+.assessments__assessment-list_body_title {
+	padding: 0 4px;
+	line-height: 18px;
+}
+
+.assessments__assessment-list_footer {
+	padding: 6px;
+}
+
+.assessments__assessment-list_header {
+	position: absolute;
+	top: 120px;
+	height: 70px;
+	background-color: #0066a0;
+	color: #fff;
+	width: 80%;
+	text-align: left;
+	padding: 6px;
+	font-family: GothamPro,Arial;
+	word-break: break-word;
+	overflow: hidden;
+	line-height: 23px;
+	font-size: 16px;
+}
+
+.assessments__assessment-list_header-link {
+	color: #fff !important;
+	text-decoration: underline;
+}
+
+.assessments__assessment-list_body {
+	margin: 10px 0;
+	width: 100%;
+	height: 80px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	padding: 0 6px;
+	color: #444;
+}
+
+.upload-file {
+	margin-bottom: 4px;
+}
+
+.assessments__filters_search {
+	width: 250px !important;
+	margin-right: 20px !important;
+}
+
+.assessments__assessment-list_status {
+	position: absolute;
+	left: 12px;
+	top: 12px;
+}
+
+.assessments__filters_status {
+	width: 150px;
+	margin-right: 20px !important;
+}
+
+.assessments__filters_sort {
+	width: 200px;
+}
