@@ -1,4 +1,5 @@
 import { constants } from './assessmentActions';
+import { constants as collaboratorConstants } from '../components/collaborators/collaboratorsActions';
 
 const listReducer = (state = [], action) => {
 	switch(action.type) {
@@ -27,17 +28,18 @@ const listReducer = (state = [], action) => {
 const assessmentReducer = (state = {
 	list: [],
 	currentAssessment: {
-		id: null,
-		collaborator_id: null,
+		id: undefined,
+		collaborator_id: undefined,
 		collaborator_fullname: '',
 		collaborator_position_name: '',
 		collaborator_subdivision_name: '',
-		proc_category_id: null,
-		project_id: null,
-		date: null,
-		state_id: null,
+		proc_category_id: undefined,
+		project_id: undefined,
+		date: new Date(),
+		state_id: undefined,
 		comment: '',
-		file: null
+		file: undefined,
+		file_name: ''
 	},
 	defaultCurrentAssessment: {},
 	ui: {
@@ -117,7 +119,18 @@ const assessmentReducer = (state = {
 			return {
 				...state,
 				currentAssessment: {
-					...state.defaultCurrentAssessment
+					id: undefined,
+					collaborator_id: undefined,
+					collaborator_fullname: '',
+					collaborator_position_name: '',
+					collaborator_subdivision_name: '',
+					proc_category_id: undefined,
+					project_id: undefined,
+					date: new Date(),
+					state_id: undefined,
+					comment: '',
+					file: undefined,
+					file_name: ''
 				}
 			}
 		}
@@ -149,6 +162,22 @@ const assessmentReducer = (state = {
 				ui: {
 					...state.ui,
 					isLoading: action.payload
+				}
+			}
+		}
+
+
+		case collaboratorConstants.SELECT_COLLABORATOR_ITEM: {
+			const { item } = action.payload;
+
+			return {
+				...state,
+				currentAssessment: {
+					...state.currentAssessment,
+					collaborator_id: item.id,
+					collaborator_fullname: item.title,
+					collaborator_position_name: item.position_name,
+					collaborator_subdivision_name: item.position_parent_name
 				}
 			}
 		}

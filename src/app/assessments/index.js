@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { List, Avatar, Icon, Card, Input, Button, Tooltip, Select, Tag, Pagination } from 'antd';
+import { List, Avatar, Icon, Input, Button, Select, Pagination } from 'antd';
 import IconText from '../components/iconText';
-import UploadFile from  '../components/uploadFile';
-import { createBaseUrl } from '../../utils/request';
 import { Link } from 'react-router-dom';
 import { getAssessments, removeAssessment, newAssessment, onChangeMeta } from './assessmentActions';
-import toBoolean from '../../utils/toBoolean';
-import unnamedImage from '../../images/unnamed_image.png';
 import './index.css';
 
 class Assessments extends Component {
@@ -15,11 +11,6 @@ class Assessments extends Component {
 	constructor(props){
 		super(props);
 
-		this.handleChangeAddTitle = this.handleChangeAddTitle.bind(this);
-		this.handleChangeAddDescription = this.handleChangeAddDescription.bind(this);
-		this.handleNewSubmit = this.handleNewSubmit.bind(this);
-		this.handleUploadFile = this.handleUploadFile.bind(this);
-		this.handleRemoveFile = this.handleRemoveFile.bind(this);
 		this.handleChangeSearchText = this.handleChangeSearchText.bind(this);
 		this.handleChangeStatusText = this.handleChangeStatusText.bind(this);
 		this.handleChangePagination = this.handleChangePagination.bind(this);
@@ -29,10 +20,6 @@ class Assessments extends Component {
 		this.handleToggleNew = this.handleToggleNew.bind(this);
 
 		this.state = {
-			addTextTitle: '',
-			addTextDescription: '',
-			addFile: null,
-			isAddFileUploaded: false,
 			isShowNew: false
 		}
 		//this.formRef = React.createRef();
@@ -92,46 +79,6 @@ class Assessments extends Component {
 		getAssessments(meta.searchText, meta.statusText, 1, meta.sort, meta.sortDirection);
 	}
 
-	handleUploadFile(f) {
-		this.setState({
-			addFile: f,
-			isAddFileUploaded: true
-		});
-	}
-
-	handleRemoveFile() {
-		if (this.state.addFile) {
-			this.setState({
-				isAddFileUploaded: false,
-				addFile: null
-			});
-		}
-	}
-
-	handleNewSubmit(e) {
-		const { newAssessment} = this.props;
-		const { addTextTitle, addTextDescription, addFile } = this.state;
-		newAssessment(addTextTitle, addTextDescription, addFile);
-
-		this.setState({
-			addTextTitle: '',
-			addTextDescription: '',
-			addFile: null
-		});
-	}
-
-	handleChangeAddTitle(e) {
-		this.setState({
-			addTextTitle: e.target.value
-		});
-	}
-
-	handleChangeAddDescription(e) {
-		this.setState({
-			addTextDescription: e.target.value
-		});
-	}
-
 	handleToggleNew() {
 		this.setState({
 			isShowNew: !this.state.isShowNew
@@ -140,7 +87,6 @@ class Assessments extends Component {
 
 	render() {
 		const { meta, assessments, removeAssessment } = this.props;
-		const { addTextTitle, addTextDescription, addFile, isAddFileUploaded, isShowNew } = this.state;
 
 		return (
 			<div className='assessments-container'>
@@ -174,7 +120,7 @@ class Assessments extends Component {
 							<Select.Option value='date:asc'>По дате (возрастанию)</Select.Option>
 							<Select.Option value='date:desc'>По дате (убыванию)</Select.Option>
 						</Select>
-						{meta.canAdd && <Button type='link' href='/#assessments/new' className='assessments__filters_add' type='primary' onClick={this.handleToggleNew}>Добавить +</Button>}
+						{meta.canAdd && <Button type='link' href='#assessments/new' className='assessments__filters_add' type='primary' onClick={this.handleToggleNew}>Добавить +</Button>}
 					</div>
 					<List
 						className='assessments-list'
@@ -193,7 +139,7 @@ class Assessments extends Component {
 							>
 								<List.Item.Meta
 									avatar={
-										<Avatar src={item.pict_url} />
+										<Avatar src={item.collaborator_pict_url} />
 									}
 									title={
 										<Link to={`/assessments/${item.id}`}>
@@ -215,20 +161,6 @@ class Assessments extends Component {
 					total={meta.total}
 					onChange={this.handleChangePagination}
 				/>
-
-				{/*meta.canAdd && <div className='assessments__new'>
-					<h4>Добавить новость</h4>
-					<Input name='title' className='assessments__new_title' value={addTextTitle} placeholder='Название' onChange={this.handleChangeAddTitle}/>
-					<Input.TextArea name='description' className='assessments__new_description' value={addTextDescription} placeholder='Описание' onChange={this.handleChangeAddDescription}/>
-					<UploadFile
-						url={createBaseUrl('File')}
-						accept='image/x-png,image/gif,image/jpeg'
-						disabled={isAddFileUploaded}
-						onSuccess={this.handleUploadFile}
-						onRemove={this.handleRemoveFile}
-					/>
-					<Button disabled={!(addTextTitle.trim() && addTextDescription.trim())} onClick={this.handleNewSubmit}>Добавить</Button>
-				</div>*/}
 			</div>	
 		);
 	}

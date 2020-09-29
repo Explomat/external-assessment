@@ -102,13 +102,14 @@ export function newAssessment(title, description, file){
 	}
 };
 
-export function saveAssessment(id){
+export function saveAssessment(id, history){
 	return (dispatch, getState) => {
 		const st = getState();
 		const at = st.assessments.currentAssessment;
 
+		const reqObj = id ? { id } : {};
 
-		request('Assessments', { id })
+		request('Assessments', reqObj)
 			.post(at)
 			.then(r => r.json())
 			.then(d => {
@@ -119,6 +120,8 @@ export function saveAssessment(id){
 					type: constants.ASSESSMENTS_SAVE_SUCCESS,
 					payload: d.data
 				});
+
+				history.goBack();
 			})
 			.catch(e => {
 				console.error(e);

@@ -1,0 +1,14 @@
+.selected-collaborators-container {
+	margin-top: 20px;
+}
+
+.selected-collaborators {
+	background-color: #f4faff;
+    border: 1px solid #dadada;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.collaborators__search {
+	margin-bottom: 20px !important;
+}

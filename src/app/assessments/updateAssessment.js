@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Icon, Card, Input, Button, Select, DatePicker } from 'antd';
+import { withRouter } from 'react-router';
+import CollaboratorsList from '../components/collaborators';
+import { Card, Input, Button, Select, DatePicker, Modal, PageHeader } from 'antd';
 import UploadFile from  '../components/uploadFile';
 import { createBaseUrl } from '../../utils/request';
-import toBoolean from '../../utils/toBoolean';
-import IconText from '../components/iconText';
-import { getAssessmentSelections, saveAssessment, onChange, onResetEdit } from './assessmentActions';
+import { getAssessmentSelections, getAssessment, saveAssessment, onChange, onResetEdit } from './assessmentActions';
+
+import { ConfigProvider } from 'antd';
+import ruRU from 'antd/es/locale/ru_RU';
+import moment from 'moment';
+import 'moment/locale/ru';
 import './index.css';
+moment.locale('ru');
 
 
 class UpdateAssessment extends Component {
@@ -14,23 +20,25 @@ class UpdateAssessment extends Component {
 	constructor(props){
 		super(props);
 
-		this.handleChangeStatus = this.handleChangeStatus.bind(this);
 		this.handleSave = this.handleSave.bind(this);
 		this.handleRemoveFile = this.handleRemoveFile.bind(this);
 		this.handleUploadFile = this.handleUploadFile.bind(this);
-		this.handleCancelEdit = this.handleCancelEdit.bind(this);
+		this.handleToggleCollaborators = this.handleToggleCollaborators.bind(this);
+
+		this.state = {
+			isShowCollaborators: false
+		}
 	}
 
 	componentDidMount(){
-		const { getAssessmentSelections } = this.props;
-		getAssessmentSelections();
-	}
-
-	handleCancelEdit() {
-		const { onResetEdit } = this.props;
+		const { onResetEdit, getAssessmentSelections, match } = this.props;
 		onResetEdit();
 
-		this.handleToggleEdit();
+		if (match.params.id) {
+			this.props.getAssessment(match.params.id);
+		} else {
+			getAssessmentSelections();
+		}
 	}
 
 	handleUploadFile(f) {
@@ -49,22 +57,6 @@ class UpdateAssessment extends Component {
 		});
 	}
 
-	handleChangeComment(e) {
-		const { onChange } = this.props;
-
-		onChange({
-			comment: e.target.value
-		});
-	}
-
-	handleChangeState(e) {
-		const { onChange } = this.props;
-
-		onChange({
-			state_id: e.target.value
-		});
-	}
-
 	handleChangeDate(e) {
 		const { onChange } = this.props;
 
@@ -73,127 +65,129 @@ class UpdateAssessment extends Component {
 		});
 	}
 
-	handleChangeProject(e) {
-		const { onChange } = this.props;
-
-		onChange({
-			project_id: e.target.value
-		});
-	}
-
-	handleChangeCategory(e) {
-		const { onChange } = this.props;
-
-		onChange({
-			proc_category_id: e.target.value
-		});
-	}
-
-	handleChangeCollaborator(e) {
-		const { onChange } = this.props;
-
-		onChange({
-			collaborator_id: e.target.value
-		});
-	}
-
-	handleChangeStatus(e) {
-		const { onChange } = this.props;
-
-		onChange({
-			state_id: e.target.value
-		});
-	}
 
 	handleSave() {
-		const { assessment, saveAssessment } = this.props;
-		saveAssessment(assessment.id);
+		const { saveAssessment, history, match } = this.props;
+		saveAssessment(match.params.id, history);
+	}
 
-		this.handleToggleEdit();
+	handleToggleCollaborators() {
+		this.setState({
+			isShowCollaborators: !this.state.isShowCollaborators
+		});
 	}
 
 	render() {
-		const { assessment, selections, isNew, ui, history } = this.props;
+		const { assessment, selections, collaboratorsCount, isNew, ui, history, onChange } = this.props;
 
 		if (ui.isLoading) {
 			return null;
 		}
 
-		return (
-			<div className='assessment-update'>
-				<div className='assessment-update__body'>
-					<Card title={isNew ? 'Создание' : 'Редактирование'}>
-						<Input.Search
-							placeholder='Выберите сотрудника'
-							className='assessment-update__fullname'
-							enterButton='...'
-							value={assessment.collaborator_fullname}
-							onChange={this.handleChangeTitle}
-						/>
-						<Select
-							className='assessment-update__project'
-							placeholder='Выберите категорию'
-							value={assessment.proc_category_id}
-							onSelect={this.handleChangeSort}
-						>
-							{selections.categories.map(s => {
-								return (
-									<Select.Option key={s.id} value={s.id}>{s.title}</Select.Option>
-								);
-							})}
-						</Select>
-						<Select
-							className='assessment-update__category'
-							placeholder='Проект'
-							value={assessment.project_id}
-							onSelect={this.handleChangeSort}
-						>
-							{selections.projects.map(s => {
-								return (
-									<Select.Option key={s.id} value={s.id}>{s.title}</Select.Option>
-								);
-							})}
-						</Select>
-						<DatePicker className='assessment-update__date' placeholder='Выберите дату' value={assessment.date} onChange={onChange} />
-						<Select
-							className='assessment-update__state'
-							placeholder='Статус'
-							value={assessment.state_id}
-							onSelect={this.handleChangeSort}
-						>
-							{selections.states.map(s => {
-								return (
-									<Select.Option key={s.id} value={s.id}>{s.title}</Select.Option>
-								);
-							})}
-						</Select>
-						<Input.TextArea autoSize={{ minRows: 2, maxRows: 6 }} className='assessment-update__comment' value={assessment.comment} onChange={this.handleChangeDescription} />
-						<UploadFile
-							className='assessment-update__file'
-							url={createBaseUrl('File')}
-							accept='image/x-png,image/gif,image/jpeg'
-							disabled={!!assessment.file}
-							fileList={ !!assessment.file ? [{id: assessment.file}] : null}
-							onSuccess={this.handleUploadFile}
-							onRemove={this.handleRemoveFile}
-						/>
+		const { isShowCollaborators } = this.state;
 
-						<div className='assessment__header_buttons'>
-							<Button size='small' className='assessment__header_cancel-button' onClick={this.handleCancelEdit}>Отмена</Button>
-							<Button
-								disabled={assessment.collaborator_fullname.trim() === ''}
-								type='primary'
-								size='small'
-								className='assessment__header_save-button'
-								onClick={this.handleSave}
+		return (
+			<ConfigProvider locale={ruRU}>
+				<div className='assessment-update'>
+					<PageHeader onBack={history.goBack} title={isNew ? 'Создание' : 'Редактирование'} className='assessment-update__body'>
+						<Card>
+							<Input.Search
+								placeholder='Выберите сотрудника'
+								className='assessment-update__fullname'
+								enterButton='...'
+								value={assessment.collaborator_fullname}
+								onSearch={this.handleToggleCollaborators}
+							/>
+							<Select
+								className='assessment-update__project'
+								placeholder='Выберите категорию'
+								value={assessment.proc_category_id}
+								onSelect={val => onChange({ proc_category_id: val })}
 							>
-								Сохранить
-							</Button>
-						</div>
-						<div className='clearfix' />
-					</Card>
+								{selections.categories.map(s => {
+									return (
+										<Select.Option key={s.id} value={s.id}>{s.title}</Select.Option>
+									);
+								})}
+							</Select>
+							<Select
+								className='assessment-update__category'
+								placeholder='Проект'
+								value={assessment.project_id}
+								onSelect={val => onChange({ project_id: val })}
+							>
+								{selections.projects.map(s => {
+									return (
+										<Select.Option key={s.id} value={s.id}>{s.title}</Select.Option>
+									);
+								})}
+							</Select>
+							<DatePicker
+								className='assessment-update__date'
+								allowClear={false}
+								placeholder='Выберите дату'
+								value={moment(assessment.date)}
+								onChange={val => onChange({ date: val })}
+							/>
+							<Select
+								className='assessment-update__state'
+								placeholder='Статус'
+								value={assessment.state_id}
+								onSelect={val => onChange({ state_id: val })}
+							>
+								{selections.states.map(s => {
+									return (
+										<Select.Option key={s.id} value={s.id}>{s.title}</Select.Option>
+									);
+								})}
+							</Select>
+							<Input.TextArea
+								placeholder='Комментарий'
+								autoSize={{ minRows: 2, maxRows: 6 }}
+								className='assessment-update__comment'
+								value={assessment.comment}
+								onChange={e => onChange({ comment: e.target.value })}
+							/>
+							<UploadFile
+								className='assessment-update__file'
+								url={createBaseUrl('File')}
+								accept='image/x-png,image/gif,image/jpeg'
+								disabled={!!assessment.file}
+								fileList={ !!assessment.file ? [{id: assessment.file}] : null}
+								onSuccess={this.handleUploadFile}
+								onRemove={this.handleRemoveFile}
+							/>
+							<div className='clearfix' />
+							<div className='assessment__header_buttons'>
+								<Button size='small' className='assessment__header_cancel-button' onClick={history.goBack}>Отмена</Button>
+								<Button
+									disabled={assessment.collaborator_fullname.trim() === ''}
+									type='primary'
+									size='small'
+									className='assessment__header_save-button'
+									onClick={this.handleSave}
+								>
+									Сохранить
+								</Button>
+							</div>
+						</Card>
+						{isShowCollaborators && <Modal
+							width = {820}
+							title='Сотрудники'
+							okText='Выбрать'
+							okButtonProps={{
+								disabled: collaboratorsCount === 0
+							}}
+							cancelText='Отмена'
+							visible
+							onCancel={this.handleToggleCollaborators}
+							onOk={this.handleToggleCollaborators}
+						>
+							<CollaboratorsList />
+						</Modal>}
+					</PageHeader>
 				</div>
-			</div>
+			</ConfigProvider>
 		);
 	}
 }
@@ -202,8 +196,9 @@ function mapStateToProps(state){
 	return {
 		assessment: state.assessments.currentAssessment,
 		selections: state.assessments.selections,
+		collaboratorsCount: state.collaborators.selectedCollaborators.length,
 		ui: state.assessments.ui
 	}
 }
 
-export default connect(mapStateToProps, { getAssessmentSelections, saveAssessment, onChange, onResetEdit })(UpdateAssessment);
+export default withRouter(connect(mapStateToProps, { getAssessmentSelections, getAssessment, saveAssessment, onChange, onResetEdit })(UpdateAssessment));

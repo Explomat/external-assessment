@@ -1,6 +1,6 @@
 <%
 
-curUserID = 6711785032659205612; // me test
+//curUserID = 6711785032659205612; // me test
 //curUserID = 6719948502038810952; // volkov test
 
 var _Assessments = OpenCodeLib('x-local://wt/web/vsk/portal/external-assessment/server/assessment.js');
@@ -61,16 +61,16 @@ function post_Assessments(queryObjects) {
 	}
 
 	// create new
-	if (assessmentId == undefined) {
+	if (assessmentId == undefined || assessmentId == 'undefined') {
 		try {
 			if (!_Assessments.isAccessToAdd(curUserID)) {
 				return _Utils.setError('У вас нет прав на создание');
 			}
 
 			var userDoc = OpenDoc(UrlFromDocID(curUserID));
-			resId = file != undefined ? file.id : null;
+			resId = file != undefined ? file : null;
 
-			var aDoc = _Assessments.create(collaboratorId, procCategoryId, projectId, date, stateId, comment, file, curUserID);
+			var aDoc = _Assessments.create(collaboratorId, procCategoryId, projectId, date, stateId, comment, resId, curUserID);
 			return _Utils.setSuccess(aDoc);
 		} catch(e) {
 			return _Utils.setError(e);
@@ -138,6 +138,55 @@ function delete_File(queryObjects) {
 	}
 
 	return _Utils.setError('Неизвестные параметры');	
+}
+
+function get_Collaborators(queryObjects){
+	var search = queryObjects.HasProperty('search') ? queryObjects.search : '';
+	var page = queryObjects.HasProperty('page') ? OptInt(queryObjects.page) : 1;
+	var pageSize = queryObjects.HasProperty('page_size') ? OptInt(queryObjects.page_size) : 10;
+
+
+	var min = (page - 1) * pageSize;
+	var max = min + pageSize;
+
+	var q = XQuery("sql: \n\
+		declare @s varchar(max) = '" + search + "'; \n\
+		select \n\
+			d.* \n\
+		from ( \n\
+			select \n\
+				count(cs.id) over() total, \n\
+				ROW_NUMBER() OVER (ORDER BY cs.fullname) AS [row_number], \n\
+				cs.id, \n\
+				cs.code, \n\
+				cs.fullname title, \n\
+				cs.pict_url, \n\
+				cs.position_name, \n\
+				cs.position_parent_name \n\
+			from collaborators cs \n\
+			where \n\
+				cs.fullname like '%'+@s+'%' \n\
+				and cs.is_dismiss = 0 \n\
+		) d \n\
+		where \n\
+			d.[row_number] > " + min + " and d.[row_number] <= " + max + " \n\
+	");
+
+	var total = 0;
+	var fobj = ArrayOptFirstElem(q);
+	if (fobj != undefined) {
+		total = fobj.total;
+	}
+
+	var obj = {
+		meta: {
+			total: Int(total),
+			pageSize: pageSize
+		},
+		collaborators: q
+	}
+
+	return _Utils.setSuccess(obj);
 }
 
 %>

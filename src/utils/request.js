@@ -10,7 +10,7 @@ export function createBaseUrl(action_name, params = {}){
 	const baseUrl = pureUrl() + '/custom_web_template.html';
 
 	window.routerId = process.env.NODE_ENV === 'production' ? '6789943271516957593' : '6727531844004172765';
-	window.serverId =  process.env.NODE_ENV === 'production' ? '6877428297147887193' : '6877428297147887193';
+	window.serverId =  process.env.NODE_ENV === 'production' ? '6877969236175162387' : '6877428297147887193';
 	const url = new URL(`${baseUrl}?object_id=${window.routerId}&server_id=${window.serverId}&action_name=${action_name}&r=${(new Date()).getTime()}`);
 	Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
 	return url.href;

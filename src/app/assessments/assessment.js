@@ -1,164 +1,132 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { PageHeader, Icon, Card, Input, Button, Tooltip, Tag } from 'antd';
-import UploadFile from  '../components/uploadFile';
-import { createBaseUrl } from '../../utils/request';
-import toBoolean from '../../utils/toBoolean';
+import { PageHeader, Tooltip } from 'antd';
 import IconText from '../components/iconText';
-import { getAssessment, saveAssessment, onChange, onResetEdit } from './assessmentActions';
+import { getAssessment } from './assessmentActions';
 import './index.css';
 
 
 class Assessment extends Component {
-
-	constructor(props){
-		super(props);
-
-		this.handleToggleEdit = this.handleToggleEdit.bind(this);
-		this.handleChangeTitle = this.handleChangeTitle.bind(this);
-		this.handleChangeDescription = this.handleChangeDescription.bind(this);
-		this.handleChangeStatus = this.handleChangeStatus.bind(this);
-		this.handleSave = this.handleSave.bind(this);
-		this.handleUploadFile = this.handleUploadFile.bind(this);
-		this.handleRemoveFile = this.handleRemoveFile.bind(this);
-		this.handleCancelEdit = this.handleCancelEdit.bind(this);
-
-		this.state = {
-			isEdit: false
-		}
-	}
 
 	componentDidMount(){
 		const { getAssessment, match } = this.props;
 		getAssessment(match.params.id);
 	}
 
-	handleCancelEdit() {
-		const { onResetEdit } = this.props;
-		onResetEdit();
-
-		this.handleToggleEdit();
-	}
-
-	handleUploadFile(f) {
-		const { onChange } = this.props;
-
-		onChange({
-			file: f.id
-		});
-	}
-
-	handleRemoveFile() {
-		const { onChange } = this.props;
-
-		onChange({
-			file: ''
-		});
-	}
-
-	handleToggleEdit() {
-		this.setState({
-			isEdit: !this.state.isEdit
-		});
-	}
-
-	handleChangeTitle(e) {
-		const { onChange } = this.props;
-
-		onChange({
-			title: e.target.value
-		});
-	}
-
-	handleChangeDescription(e) {
-		const { onChange } = this.props;
-
-		onChange({
-			description: e.target.value
-		});
-	}
-
-	handleChangeStatus(isArchive) {
-		/*const { topic, archiveTopic } = this.props;
-		archiveTopic(topic.id, isArchive);*/
-	}
-
-	handleSave() {
-		const { assessment, saveAssessment } = this.props;
-		saveAssessment(assessment.id);
-
-		this.handleToggleEdit();
-	}
-
 	render() {
-		const { assessment, ui, history } = this.props;
-		const { isEdit } = this.state;
+		const { assessment, selections, ui, history, match } = this.props;
 
 		if (ui.isLoading) {
 			return null;
 		}
 
+		const procCategory = selections.categories.find(c => c.id == assessment.proc_category_id);
+		const project = selections.projects.find(c => c.id == assessment.project_id);
+		const state = selections.states.find(c => c.id== assessment.state_id);
+
 		return (
 			<div className='assessment'>
-				<div className='assessment__header'>
-					{/*<span className='assessment__header_author-fullname'>
-						{topic.author_fullname}
-					</span>
-					<span className='assessment__header_publish-date'>{topic.publish_date}</span>
-					{!isEdit && (topic.meta && topic.meta.canEdit) && <Icon type='edit' className='assessment__header_edit-icon' onClick={this.handleToggleEdit} />}
-					{isEdit && <Button type='primary' size='small' className='assessment__header_save-button' onClick={this.handleSave}>Сохранить</Button>}*/}
-				</div>
 				<div className='assessment__body'>
-					{isEdit ? (
-						<div className='assessment__body_edit'>
-							<h3>Редактирование</h3>
-							<Input className='assessment__body_edit_title' value={assessment.title} onChange={this.handleChangeTitle} />
-							<Input.TextArea autoSize={{ minRows: 2, maxRows: 6 }} className='assessment__body_edit_description' value={assessment.description} onChange={this.handleChangeDescription} />
-							<UploadFile
-								className='assessment__body_edit_file'
-								url={createBaseUrl('File')}
-								accept='image/x-png,image/gif,image/jpeg'
-								disabled={!!assessment.image_id}
-								fileList={ !!assessment.image_id ? [{id: assessment.image_id}] : null}
-								onSuccess={this.handleUploadFile}
-								onRemove={this.handleRemoveFile}
-							/>
-
-							<div className='assessment__header_buttons'>
-								<Button size='small' className='assessment__header_cancel-button' onClick={this.handleCancelEdit}>Отмена</Button>
-								<Button disabled={assessment.title.trim() === '' || assessment.description.trim() === ''} type='primary' size='small' className='assessment__header_save-button' onClick={this.handleSave}>Сохранить</Button>
-							</div>
-							<div className='clearfix' />
-						</div>
-					) : (
-						<div>
-							<PageHeader
-								onBack={history.goBack}
-								title={<h3 className='assessment__body_title'>{assessment.collaborator_fullname}</h3>}
-								subTitle={
-									<span>
-										<span className='assessment__header_container'>
-											{/*<span className='assessment__header_author-fullname'>
-												{topic.author_fullname}
-											</span>*/}
-											<span className={`assessments-list__state assessments-list__state--${assessment.state_code}`}>{assessment.state_title}</span>
-											<span className='assessment__header_publish-date'>{new Date(assessment.date).toLocaleDateString()}</span>
-										</span>
+					<div>
+						<PageHeader
+							onBack={history.goBack}
+							title={<h3 className='assessment__body_title'>{assessment.collaborator_fullname}</h3>}
+							subTitle={
+								<span>
+									<span className='assessment__header_container'>
+										<span className={`assessments-list__state assessments-list__state--${assessment.state_code}`}>{assessment.state_title}</span>
+										<span className='assessment__header_publish-date'>{new Date(assessment.date).toLocaleDateString()}</span>
 									</span>
-								}
-								extra={
-									(!isEdit && (assessment.meta && assessment.meta.canEdit) && (
-											<Tooltip title='Реактировать'>
+								</span>
+							}
+							extra={
+								((assessment.meta && assessment.meta.canEdit) && (
+										<Tooltip title='Реактировать'>
+											<Link to={`${match.params.id}/edit`}>
 												<IconText type='edit' onClick={this.handleToggleEdit} />
-											</Tooltip>
-										)
+											</Link>
+										</Tooltip>
 									)
-								}
-							/>
-							{assessment.file && <img className='assessment__image' src={`/download_file.html?file_id=${assessment.file}`} />}
-							<div className='assessment__body_description' dangerouslySetInnerHTML={{ __html: assessment.description}} />
-						</div>
-					)}
+								)
+							}
+						/>
+						<ul className='assessment__info'>
+							<li className='assessment__info-row'>
+								<span className='assessment__info-cell'>
+									ФИО
+								</span>
+								<span className='assessment__info-cell'>
+									{assessment.collaborator_fullname}
+								</span>
+							</li>
+							<li className='assessment__info-row'>
+								<span className='assessment__info-cell'>
+									Должность
+								</span>
+								<span className='assessment__info-cell'>
+									{assessment.collaborator_position_name}
+								</span>
+							</li>
+							<li className='assessment__info-row'>
+								<span className='assessment__info-cell'>
+									Подразделение
+								</span>
+								<span className='assessment__info-cell'>
+									{assessment.collaborator_subdivision_name}
+								</span>
+							</li>
+							<li className='assessment__info-row'>
+								<span className='assessment__info-cell'>
+									Категория оценочной процедуры:
+								</span>
+								<span className='assessment__info-cell'>
+									{procCategory ? procCategory.title : ''}
+								</span>
+							</li>
+							<li className='assessment__info-row'>
+								<span className='assessment__info-cell'>
+									Проект
+								</span>
+								<span className='assessment__info-cell'>
+									{project ? project.title : ''}
+								</span>
+							</li>
+							<li className='assessment__info-row'>
+								<span className='assessment__info-cell'>
+									Дата
+								</span>
+								<span className='assessment__info-cell'>
+									{new Date(assessment.date).toLocaleDateString()}
+								</span>
+							</li>
+							<li className='assessment__info-row'>
+								<span className='assessment__info-cell'>
+									Статус
+								</span>
+								<span className='assessment__info-cell'>
+									{state ? state.title : ''}
+								</span>
+							</li>
+							<li className='assessment__info-row'>
+								<span className='assessment__info-cell'>
+									Комментарий
+								</span>
+								<span className='assessment__info-cell'>
+									{assessment.comment}
+								</span>
+							</li>
+							<li className='assessment__info-row'>
+								<span className='assessment__info-cell'>
+									Файл
+								</span>
+								<span className='assessment__info-cell'>
+									{assessment.file_name}
+								</span>
+							</li>
+						</ul>
+						{/*assessment.file && <img className='assessment__image' src={`/download_file.html?file_id=${assessment.file}`} />*/}
+					</div>
 				</div>
 			</div>
 		);
@@ -168,8 +136,9 @@ class Assessment extends Component {
 function mapStateToProps(state){
 	return {
 		assessment: state.assessments.currentAssessment,
+		selections: state.assessments.selections,
 		ui: state.assessments.ui
 	}
 }
 
-export default connect(mapStateToProps, { getAssessment, saveAssessment, onChange, onResetEdit })(Assessment);
+export default connect(mapStateToProps, { getAssessment })(Assessment);

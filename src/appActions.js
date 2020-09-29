@@ -1,7 +1,8 @@
 
 export const constants = {
 	'LOADING': 'LOADING',
-	'ERROR': 'ERROR'
+	'ERROR': 'ERROR',
+	'INFO': 'INFO'
 };
 
 export function loading(isLoading){
@@ -11,9 +12,16 @@ export function loading(isLoading){
 	}
 };
 
-export function error(error){
+export function error(msg){
 	return {
 		type: constants.ERROR,
-		payload: error
+		payload: msg
+	}
+};
+
+export function info(msg){
+	return {
+		type: constants.INFO,
+		payload: msg
 	}
 };

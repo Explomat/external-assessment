@@ -2,6 +2,47 @@
 	padding: 24px;
 }
 
+.assessment__info {
+	font-size: 15px;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.assessment__info-row {
+	display: flex;
+}
+
+.assessment__info-cell {
+	line-height: 28px;
+    display: block;
+    padding: 3px 0;
+    text-overflow: ellipsis;
+    color: rgba(0,0,0,.5);
+    width: 300px;
+    display: inline-block;
+}
+
+.assessment__info-cell:last-child {
+    -webkit-box-flex: 1;
+    flex-grow: 1;
+    padding-left: 8px;
+    color: #000;
+}
+
+.assessment__info-cell:first-child {
+    flex-shrink: 0;
+    width: 300px;
+}
+
+.assessment-update {
+	border-radius: 4px;
+	padding: 4px;
+	clear: both;
+	padding: 12px;
+}
+
 .assessment-update__fullname, .assessment-update__project, .assessment-update__category, .assessment-update__state, .assessment-update__comment {
 	display: block !important;
 	width: 400px;
@@ -36,9 +77,6 @@
 .assessment__body_edit {
 	border-radius: 4px;
 	padding: 4px;
-	-webkit-box-shadow: 10px 6px 17px -5px rgba(0,0,0,0.68);
-	-moz-box-shadow: 10px 6px 17px -5px rgba(0,0,0,0.68);
-	box-shadow: 10px 6px 17px -5px rgba(0,0,0,0.68);
 	clear: both;
 	padding: 12px;
 }
