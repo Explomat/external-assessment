@@ -27,6 +27,7 @@ function setError(message){
 
 function notificate(templateCode, primaryId, text, secondaryId){
 	tools.create_notification(templateCode, primaryId, text, secondaryId);
+	log('notificate: "templateCode": ' + templateCode + ', "primaryId": ' + primaryId + ', "text": ' + text + ', "secondaryId": ' + secondaryId);
 }
 
 function toJSObject(xmlElem) {

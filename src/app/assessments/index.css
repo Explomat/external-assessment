@@ -2,6 +2,10 @@
 	padding: 24px;
 }
 
+a.assessments__filters_add:visited {
+	color: #fff;
+}
+
 .assessment__info {
 	font-size: 15px;
     flex-wrap: wrap;
@@ -43,7 +47,12 @@
 	padding: 12px;
 }
 
-.assessment-update__fullname, .assessment-update__project, .assessment-update__category, .assessment-update__state, .assessment-update__comment {
+.assessment-update__fullname,
+.assessment-update__project,
+.assessment-update__category,
+.assessment-update__state,
+.assessment-update__comment,
+.assessment-update__notificate {
 	display: block !important;
 	width: 400px;
 	margin-top: 20px !important;

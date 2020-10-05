@@ -6,6 +6,9 @@
 var _Assessments = OpenCodeLib('x-local://wt/web/vsk/portal/external-assessment/server/assessment.js');
 DropFormsCache('x-local://wt/web/vsk/portal/external-assessment/server/assessment.js');
 
+var _User = OpenCodeLib('x-local://wt/web/vsk/portal/external-assessment/server/user.js');
+DropFormsCache('x-local://wt/web/vsk/portal/external-assessment/server/user.js');
+
 var _Utils = OpenCodeLib('x-local://wt/web/vsk/portal/external-assessment/server/utils.js');
 DropFormsCache('x-local://wt/web/vsk/portal/external-assessment/server/utils.js');
 
@@ -55,6 +58,7 @@ function post_Assessments(queryObjects) {
 	var comment = data.GetOptProperty('comment');
 	var file = data.GetOptProperty('file');
 	var resId = null;
+	var isNotificate = data.GetOptProperty('is_notificate');
 
 	if (collaboratorId == undefined) {
 		return _Utils.setError('Не выбран сотрудник');
@@ -67,10 +71,21 @@ function post_Assessments(queryObjects) {
 				return _Utils.setError('У вас нет прав на создание');
 			}
 
-			var userDoc = OpenDoc(UrlFromDocID(curUserID));
+			//var userDoc = OpenDoc(UrlFromDocID(curUserID));
 			resId = file != undefined ? file : null;
 
 			var aDoc = _Assessments.create(collaboratorId, procCategoryId, projectId, date, stateId, comment, resId, curUserID);
+			
+			if (isNotificate != undefined && (isNotificate || isNotificate == 'true')) {
+				_Utils.notificate('external-assessment_1', collaboratorId);
+
+				var bossId = _User.getBoss(collaboratorId);
+				if (bossId != undefined) {
+					_Utils.notificate('external-assessment_2', bossId, '', collaboratorId);
+				}
+				//Уведомляем сотрудника и рук-ля
+				//_Utils.notificate();
+			}
 			return _Utils.setSuccess(aDoc);
 		} catch(e) {
 			return _Utils.setError(e);

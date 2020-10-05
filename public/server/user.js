@@ -28,3 +28,17 @@ function isModerator(user_id) {
 
 	return (q != undefined); 
 }
+
+function getBoss(collaboratorId) {
+
+	var q = XQuery("sql: \n\
+		select fm.person_id \n\
+		from func_managers fm \n\
+		where \n\
+			fm.[object_id] = " + collaboratorId + " \n\
+			and fm.catalog = 'collaborator' \n\
+			and fm.is_native = 1 \n\
+	");
+
+	return q == undefined ? q : q.person_id;
+}

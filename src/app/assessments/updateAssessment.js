@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import CollaboratorsList from '../components/collaborators';
-import { Card, Input, Button, Select, DatePicker, Modal, PageHeader } from 'antd';
+import { Card, Input, Button, Select, DatePicker, Modal, PageHeader, Checkbox } from 'antd';
 import UploadFile from  '../components/uploadFile';
 import { createBaseUrl } from '../../utils/request';
+import toBoolean from '../../utils/toBoolean';
 import { getAssessmentSelections, getAssessment, saveAssessment, onChange, onResetEdit } from './assessmentActions';
 
 import { ConfigProvider } from 'antd';
@@ -157,6 +158,13 @@ class UpdateAssessment extends Component {
 								onSuccess={this.handleUploadFile}
 								onRemove={this.handleRemoveFile}
 							/>
+							<Checkbox
+								className='assessment-update__notificate'
+								checked={toBoolean(assessment.is_notificate)}
+								onChange={e => onChange({ is_notificate: e.target.checked })}
+							>
+								Отправлять уведомление при создании
+							</Checkbox>
 							<div className='clearfix' />
 							<div className='assessment__header_buttons'>
 								<Button size='small' className='assessment__header_cancel-button' onClick={history.goBack}>Отмена</Button>

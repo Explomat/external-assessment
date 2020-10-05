@@ -136,7 +136,8 @@ function getObject(id, user_id) {
 				cceas.title state_title, \n\
 				cceit.comment, \n\
 				cceit.[file], \n\
-				rs.file_name \n\
+				rs.file_name, \n\
+				cceit.is_notificate \n\
 			from \n\
 				cc_ex_assessment_mains cceit \n\
 			left join cc_ex_assessment_proc_categorys cceapc on cceapc.id = cceit.proc_category_id \n\
@@ -187,7 +188,8 @@ function list(user_id, search, status, minRow, maxRow, pageSize, sort, sortDirec
 					cceas.title state_title, \n\
 					cceit.comment, \n\
 					cceit.[file], \n\
-					rs.file_name \n\
+					rs.file_name, \n\
+					cceit.is_notificate \n\
 				from cc_ex_assessment_mains cceit \n\
 				left join cc_ex_assessment_proc_categorys cceapc on cceapc.id = cceit.proc_category_id \n\
 				left join cc_ex_assessment_projects cceap on cceap.id = cceit.project_id \n\

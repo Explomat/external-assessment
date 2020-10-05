@@ -39,7 +39,8 @@ const assessmentReducer = (state = {
 		state_id: undefined,
 		comment: '',
 		file: undefined,
-		file_name: ''
+		file_name: '',
+		is_notificate: false
 	},
 	defaultCurrentAssessment: {},
 	ui: {
@@ -130,7 +131,8 @@ const assessmentReducer = (state = {
 					state_id: undefined,
 					comment: '',
 					file: undefined,
-					file_name: ''
+					file_name: '',
+					is_notificate: false
 				}
 			}
 		}

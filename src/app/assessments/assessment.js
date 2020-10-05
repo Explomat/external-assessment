@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { PageHeader, Tooltip } from 'antd';
+import { PageHeader, Tooltip, Checkbox } from 'antd';
 import IconText from '../components/iconText';
 import { getAssessment } from './assessmentActions';
+import toBoolean from '../../utils/toBoolean';
 import './index.css';
 
 
@@ -121,7 +122,17 @@ class Assessment extends Component {
 									Файл
 								</span>
 								<span className='assessment__info-cell'>
-									{assessment.file_name}
+									<a href={`/download_file.html?file_id=${assessment.file}`}>
+										{assessment.file_name}
+									</a>
+								</span>
+							</li>
+							<li className='assessment__info-row'>
+								<span className='assessment__info-cell'>
+									Отправка уведомления при создании
+								</span>
+								<span className='assessment__info-cell'>
+									<Checkbox checked={toBoolean(assessment.is_notificate)} disabled={true} />
 								</span>
 							</li>
 						</ul>

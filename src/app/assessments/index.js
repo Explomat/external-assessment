@@ -4,6 +4,7 @@ import { List, Avatar, Icon, Input, Button, Select, Pagination } from 'antd';
 import IconText from '../components/iconText';
 import { Link } from 'react-router-dom';
 import { getAssessments, removeAssessment, newAssessment, onChangeMeta } from './assessmentActions';
+import { createBaseUrl } from '../../utils/request';
 import './index.css';
 
 class Assessments extends Component {
@@ -120,7 +121,7 @@ class Assessments extends Component {
 							<Select.Option value='date:asc'>По дате (возрастанию)</Select.Option>
 							<Select.Option value='date:desc'>По дате (убыванию)</Select.Option>
 						</Select>
-						{meta.canAdd && <Button type='link' href='#assessments/new' className='assessments__filters_add' type='primary' onClick={this.handleToggleNew}>Добавить +</Button>}
+						{meta.canAdd && <Button type='link' href={`${window.location.href}/new`} className='assessments__filters_add' type='primary' onClick={this.handleToggleNew}>Добавить +</Button>}
 					</div>
 					<List
 						className='assessments-list'
