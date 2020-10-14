@@ -14,6 +14,7 @@ class Assessments extends Component {
 
 		this.handleChangeSearchText = this.handleChangeSearchText.bind(this);
 		this.handleChangeStatusText = this.handleChangeStatusText.bind(this);
+		this.handleChangeProject = this.handleChangeProject.bind(this);
 		this.handleChangePagination = this.handleChangePagination.bind(this);
 		this.handleSearch = this.handleSearch.bind(this);
 		this.handleChangeSort = this.handleChangeSort.bind(this);
@@ -28,7 +29,7 @@ class Assessments extends Component {
 
 	componentDidMount(){
 		const { meta, getAssessments } = this.props;
-		getAssessments(meta.searchText, meta.statusText, meta.page, meta.sort, meta.sortDirection);
+		getAssessments(meta.searchText, meta.statusText, meta.project, meta.page, meta.sort, meta.sortDirection);
 	}
 
 	handleChangeSort(val) {
@@ -40,7 +41,7 @@ class Assessments extends Component {
 			sortDirection
 		});
 
-		getAssessments(meta.searchText, meta.statusText, 1, sort, sortDirection);
+		getAssessments(meta.searchText, meta.statusText, meta.project, 1, sort, sortDirection);
 	}
 
 	handleChangeSearchText(e) {
@@ -58,7 +59,17 @@ class Assessments extends Component {
 			page: 1
 		});
 
-		getAssessments(meta.searchText, statusText, 1, meta.sort, meta.sortDirection);
+		getAssessments(meta.searchText, statusText, meta.project, 1, meta.sort, meta.sortDirection);
+	}
+
+	handleChangeProject(project) {
+		const { onChangeMeta, getAssessments, meta } = this.props;
+		onChangeMeta({
+			project,
+			page: 1
+		});
+
+		getAssessments(meta.searchText, meta.statusText, project, 1, meta.sort, meta.sortDirection);
 	}
 
 	handleChangePagination(page, pageSize) {
@@ -68,7 +79,7 @@ class Assessments extends Component {
 			pageSize
 		});
 
-		getAssessments(meta.searchText, meta.statusText, page, meta.sort, meta.sortDirection);
+		getAssessments(meta.searchText, meta.statusText, meta.project, page, meta.sort, meta.sortDirection);
 	}
 
 	handleSearch(val) {
@@ -77,7 +88,7 @@ class Assessments extends Component {
 			page: 1
 		});
 
-		getAssessments(meta.searchText, meta.statusText, 1, meta.sort, meta.sortDirection);
+		getAssessments(meta.searchText, meta.statusText, meta.project, 1, meta.sort, meta.sortDirection);
 	}
 
 	handleToggleNew() {
@@ -87,7 +98,7 @@ class Assessments extends Component {
 	}
 
 	render() {
-		const { meta, assessments, removeAssessment } = this.props;
+		const { meta, selections, assessments, removeAssessment } = this.props;
 
 		return (
 			<div className='assessments-container'>
@@ -107,9 +118,20 @@ class Assessments extends Component {
 							value={meta.statusText}
 							onSelect={this.handleChangeStatusText}
 						>
-							<Select.Option value='all'>Все</Select.Option>
-							<Select.Option value='active'>Активные</Select.Option>
-							<Select.Option value='complete'>Завершенные</Select.Option>
+							<Select.Option value='0'>Все статусы</Select.Option>
+							{selections.states.map(s =>
+								<Select.Option key={s.id} value={s.id}>{s.title}</Select.Option>
+							)}
+						</Select>}
+						{meta.isModerator && <Select
+							className='assessments__filters_project'
+							value={meta.project}
+							onSelect={this.handleChangeProject}
+						>
+							<Select.Option value='0'>Все проекты</Select.Option>
+							{selections.projects.map(s =>
+								<Select.Option key={s.id} value={s.id}>{s.title}</Select.Option>
+							)}
 						</Select>}
 						<Select
 							className='assessments__filters_sort'
@@ -170,7 +192,8 @@ class Assessments extends Component {
 function mapStateToProps(state){
 	return {
 		assessments: state.assessments.list,
-		meta: state.assessments.meta
+		meta: state.assessments.meta,
+		selections: state.assessments.selections
 	}
 }
 

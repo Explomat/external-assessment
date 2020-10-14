@@ -22,29 +22,29 @@ function create(collaboratorId, procCategoryId, projectId, date, stateId, commen
 	"));
 
 	if (c != undefined) {
-		alert('111');
+		//alert('111');
 		var aDoc = tools.new_doc_by_name('cc_ex_assessment_main');
-		alert('222');
+		//alert('222');
 		aDoc.TopElem.collaborator_id = Int(collaboratorId);
-		alert('333');
+		//alert('333');
 		aDoc.TopElem.collaborator_fullname = String(c.fullname);
-		alert('444');
+		//alert('444');
 		aDoc.TopElem.collaborator_position_name = String(c.position_name);
-		alert('555');
+		//alert('555');
 		aDoc.TopElem.collaborator_subdivision_name = String(c.position_parent_name);
-		alert('6');
+		//alert('6');
 		aDoc.TopElem.proc_category_id = procCategoryId;
-		alert('7');
+		//alert('7');
 		aDoc.TopElem.project_id = projectId;
-		alert('8');
+		//alert('8');
 		aDoc.TopElem.date = date;
-		alert('9');
+		//alert('9');
 		aDoc.TopElem.state_id = stateId;
-		alert('10');
+		//alert('10');
 		aDoc.TopElem.comment = comment;
-		alert('11');
+		//alert('11');
 		aDoc.TopElem.file = fileId;
-		alert('12');
+		//alert('12');
 
 		aDoc.BindToDb();
 		aDoc.Save();
@@ -156,14 +156,15 @@ function getObject(id, user_id) {
 	return lobj;
 }
 
-function list(user_id, search, status, minRow, maxRow, pageSize, sort, sortDirection) {
+function list(user_id, search, status, project, minRow, maxRow, pageSize, sort, sortDirection) {
 	var Utils = OpenCodeLib('x-local://wt/web/vsk/portal/external-assessment/server/utils.js');
 	var User = OpenCodeLib('x-local://wt/web/vsk/portal/external-assessment/server/user.js');
 	DropFormsCache('x-local://wt/web/vsk/portal/external-assessment/server/user.js');
 
 	var lq = "sql: \n\
 		declare @s varchar(300) = '" + search + "'; \n\
-		declare @status varchar(100) = '" + status + "' \n\
+		declare @status bigint = " + status + "; \n\
+		declare @project bigint = " + project + "; \n\
 		select d.* \n\
 		from ( \n\
 			select \n\
@@ -198,13 +199,16 @@ function list(user_id, search, status, minRow, maxRow, pageSize, sort, sortDirec
 				left join resources rs on rs.id = cceit.[file] \n\
 				where \n\
 					cceit.collaborator_fullname like '%'+@s+'%' \n\
-					and (cceas.code = @status or @status = 'all') \n\
+					and (cceas.id = @status or @status = 0) \n\
+					and (cceit.project_id = @project or @project = 0) \n\
 			) c \n\
 		) d \n\
 		where \n\
 			d.[row_number] > " + minRow + " and d.[row_number] <= " + maxRow + " \n\
 		order by d." + sort + " " + sortDirection
 	;
+
+	alert(lq);
 
 	var l = XQuery(lq);
 	var larr = Utils.toJSArray(l);
@@ -228,6 +232,7 @@ function list(user_id, search, status, minRow, maxRow, pageSize, sort, sortDirec
 			canDelete: (ArrayOptFind(actions, "This == 'remove'") != undefined),
 			isModerator: isModerator
 		},
+		selections: getSelections(),
 		assessments: larr
 	}
 	return obj;

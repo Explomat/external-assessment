@@ -65,6 +65,7 @@ a.assessments__filters_add:visited {
 
 .assessments__filters_add {
 	margin-left: 20px;
+	/*display: block !important;*/
 }
 
 .assessments-list__state {
@@ -76,11 +77,11 @@ a.assessments__filters_add:visited {
 }
 
 .assessments-list__state--active {
-	background-color: #52c41ab5;
+	border: 1px solid #444;
 }
 
 .assessments-list__state--complete {
-	border: 1px solid #444;
+	background-color: #52c41ab5;
 }
 
 .assessment__body_edit {
@@ -270,8 +271,9 @@ a.assessments__filters_add:visited {
 }
 
 .assessments__filters_search {
-	width: 250px !important;
-	margin-right: 20px !important;
+	/*width: 250px !important;*/
+	margin-bottom: 10px !important;
+	display: block;
 }
 
 .assessments__assessment-list_status {
@@ -281,7 +283,12 @@ a.assessments__filters_add:visited {
 }
 
 .assessments__filters_status {
-	width: 150px;
+	width: 130px;
+	margin-right: 20px !important;
+}
+
+.assessments__filters_project {
+	width: 180px;
 	margin-right: 20px !important;
 }
 

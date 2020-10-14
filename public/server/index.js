@@ -1,6 +1,6 @@
 <%
 
-//curUserID = 6711785032659205612; // me test
+curUserID = 6711785032659205612; // me test
 //curUserID = 6719948502038810952; // volkov test
 
 var _Assessments = OpenCodeLib('x-local://wt/web/vsk/portal/external-assessment/server/assessment.js');
@@ -22,7 +22,8 @@ function get_Assessments(queryObjects) {
 			assessmentsObj = _Assessments.getObject(assessmentId, curUserID);
 		} else {
 			var search = queryObjects.HasProperty('search') ? queryObjects.search : '';
-			var status = queryObjects.HasProperty('status') ? queryObjects.status : 'active';
+			var status = queryObjects.HasProperty('status') ? queryObjects.status : 0;
+			var project = queryObjects.HasProperty('project') ? queryObjects.project : 0;
 			var page = queryObjects.HasProperty('page') ? OptInt(queryObjects.page) : 1;
 			var sort = queryObjects.HasProperty('sort') ? String(queryObjects.sort) : 'date';
 			var sortDirection = queryObjects.HasProperty('sort_direction') ? String(queryObjects.sort_direction) : 'desc';
@@ -31,7 +32,7 @@ function get_Assessments(queryObjects) {
 			var min = (page - 1) * pageSize;
 			var max = min + pageSize;
 
-			assessmentsObj = _Assessments.list(curUserID, search, status, min, max, pageSize, sort, sortDirection);
+			assessmentsObj = _Assessments.list(curUserID, search, status, project, min, max, pageSize, sort, sortDirection);
 		}		
 	} catch(e) {
 		return _Utils.setError(e);

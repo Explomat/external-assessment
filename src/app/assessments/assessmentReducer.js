@@ -54,7 +54,8 @@ const assessmentReducer = (state = {
 		pageSize: 1,
 		total: 1,
 		searchText: '',
-		statusText: 'active'
+		statusText: '0',
+		project: '0'
 	},
 	selections: {
 		categories: [],
@@ -70,7 +71,8 @@ const assessmentReducer = (state = {
 				meta: {
 					...state.meta,
 					...action.payload.meta
-				}
+				},
+				selections: action.payload.selections
 			}
 		}
 

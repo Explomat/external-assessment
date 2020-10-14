@@ -193,6 +193,7 @@ export function getAssessments(){
 			.get({
 				search: meta.searchText,
 				status: meta.statusText,
+				project: meta.project,
 				page: meta.page,
 				sort: meta.sort,
 				sort_direction: meta.sortDirection
